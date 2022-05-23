@@ -1,3 +1,4 @@
+const unneededVariable = 'This variable is never used';
 // Read environment variables from an .env file (if present)
 require('dotenv').config();
 
