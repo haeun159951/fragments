@@ -29,7 +29,7 @@ class Fragment {
     if (type === 'text/plain' || type === 'text/plain; charset=utf-8') {
       this.type = type;
     } else {
-      throw new Error('type should be simple type');
+      throw new Error('Type should be simple type');
     }
     if (size >= 0 && typeof size === 'number') {
       this.size = size;

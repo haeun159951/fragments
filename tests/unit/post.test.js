@@ -45,11 +45,11 @@ describe('POST /v1/fragments', () => {
 
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe('ok');
-    expect(res.body.fragment.size).toEqual(10); // size check
-    expect(res.body.fragment.type).toEqual('text/plain'); // type check
-    expect(res.body.fragment.ownerId).toEqual(res.body.fragment.ownerId); //ownerId
-    expect(res.body.fragment.id).toEqual(res.body.fragment.id); // id check
-    expect(res.body.fragment.created).toEqual(res.body.fragment.created); //created
+    expect(res.body.fragment.size).toEqual(10);
+    expect(res.body.fragment.type).toEqual('text/plain');
+    expect(res.body.fragment.ownerId).toEqual(res.body.fragment.ownerId);
+    expect(res.body.fragment.id).toEqual(res.body.fragment.id);
+    expect(res.body.fragment.created).toEqual(res.body.fragment.created);
   });
 
   // responses include a Location header with a URL to GET the fragment
