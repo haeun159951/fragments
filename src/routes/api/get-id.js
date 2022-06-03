@@ -3,16 +3,16 @@ const { Fragment } = require('../../model/fragment');
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 
 /**
- * Get a list of fragments for the current user
+ * Get a fragment by the id
  */
 module.exports = async (req, res) => {
   try {
-    console.log(req.query.expand); //undefined
-    const fragments = await Fragment.byUser(req.user, req.query.expand);
-    console.log(fragments);
+    const fragment = await Fragment.byId(req.user, req.params.id);
+    let data = await fragment.getData();
+    data = data.toString();
     res.status(200).json(
       createSuccessResponse({
-        fragments,
+        data,
       })
     );
   } catch (error) {

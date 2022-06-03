@@ -20,5 +20,28 @@ describe('GET /v1/fragments', () => {
     expect(Array.isArray(res.body.fragments)).toBe(true);
   });
 
+  test('authenticated users get a fragments array after creating 2 fragments', async () => {
+    const postRes1 = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-type', 'text/plain')
+      .send('Fragment 1');
+    expect(postRes1.statusCode).toBe(201);
+    expect(postRes1.body.status).toBe('ok');
+
+    const postRes2 = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-type', 'text/plain')
+      .send('Fragment 1-1');
+    expect(postRes2.statusCode).toBe(201);
+    expect(postRes2.body.status).toBe('ok');
+
+    const getRes = await request(app).get('/v1/fragments').auth('user1@email.com', 'password1');
+    expect(getRes.statusCode).toBe(200);
+    expect(getRes.body.status).toBe('ok');
+    expect(Array.isArray(getRes.body.fragments)).toBe(true);
+  });
+
   // TODO: we'll need to add tests to check the contents of the fragments array later
 });
