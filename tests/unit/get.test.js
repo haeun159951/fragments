@@ -19,7 +19,7 @@ describe('GET /v1/fragments', () => {
     expect(res.body.status).toBe('ok');
     expect(Array.isArray(res.body.fragments)).toBe(true);
   });
-
+  //authenticated users get a fragments array after creating 2 fragments
   test('authenticated users get a fragments array after creating 2 fragments', async () => {
     const postRes1 = await request(app)
       .post('/v1/fragments')

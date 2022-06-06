@@ -1,4 +1,5 @@
 // src/routes/api/get.js
+const logger = require('../../logger');
 const { Fragment } = require('../../model/fragment');
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 
@@ -7,15 +8,16 @@ const { createSuccessResponse, createErrorResponse } = require('../../response')
  */
 module.exports = async (req, res) => {
   try {
-    console.log(req.query.expand); //undefined
     const fragments = await Fragment.byUser(req.user, req.query.expand);
-    console.log(fragments);
+    logger.debug(`owner id: ${req.user} ${req.query.expand}`);
     res.status(200).json(
       createSuccessResponse({
         fragments,
       })
     );
+    logger.info({ fragments }, 'worked successfully');
   } catch (error) {
-    res.status(415).json(createErrorResponse(415, error.message));
+    logger.error({ error }, `Error on post request`);
+    res.status(404).json(createErrorResponse(404, error.message));
   }
 };

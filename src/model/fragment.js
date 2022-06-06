@@ -2,6 +2,7 @@
 const { nanoid } = require('nanoid');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
+const logger = require('../logger');
 
 // Functions for working with fragment metadata/data using our DB
 const {
@@ -25,11 +26,10 @@ class Fragment {
     } else {
       throw new Error('ownerId is required');
     }
-
     if (type === 'text/plain' || type === 'text/plain; charset=utf-8') {
       this.type = type;
     } else {
-      throw new Error('Type should be simple type');
+      throw new Error('Type should be simple media type and can include a charset');
     }
     if (size >= 0 && typeof size === 'number') {
       this.size = size;
@@ -56,6 +56,7 @@ class Fragment {
     try {
       return await listFragments(ownerId, expand);
     } catch (error) {
+      logger.error({ error }, 'Error from byUser');
       return [];
     }
   }
@@ -67,17 +68,19 @@ class Fragment {
    * @returns Promise<Fragment>
    */
   static async byId(ownerId, id) {
-    if ((await this.byUser(ownerId)).includes(id)) {
+    const fragment = await readFragment(ownerId, id);
+    logger.info({ fragment }, 'fragment info');
+    if (fragment.id) {
       try {
-        return await readFragment(ownerId, id);
+        return fragment;
       } catch (error) {
-        throw new Error('failed to read fragment');
+        logger.error({ error }, 'Error by id');
+        throw new Error(error);
       }
     } else {
-      throw new Error('failed to get the user by the given id');
+      throw new Error('failed to get a fragment with the id');
     }
   }
-
   /**
    * Delete the user's fragment data and metadata for the given id
    * @param {string} ownerId user's hashed email
@@ -105,6 +108,7 @@ class Fragment {
     try {
       return readFragmentData(this.ownerId, this.id);
     } catch (error) {
+      logger.error({ error }, 'Error from get data');
       throw new Error('failed to get the fragment data');
     }
   }
@@ -115,12 +119,14 @@ class Fragment {
    * @returns Promise
    */
   async setData(data) {
-    if (Buffer.from(data)) {
+    if (Buffer.isBuffer(data)) {
+      logger.debug({ data }, 'data');
       try {
-        this.size = Buffer.byteLength(data);
+        this.size = data.length;
         this.save();
         return writeFragmentData(this.ownerId, this.id, data);
       } catch (error) {
+        logger.error({ error }, 'Error from set data');
         throw new Error(error);
       }
     } else {
@@ -151,11 +157,8 @@ class Fragment {
    * @returns {Array<string>} list of supported mime types
    */
   get formats() {
-    if (this.mimeType === 'text/plain') {
-      return ['text/plain'];
-    } else {
-      return [];
-    }
+    let result = this.mimeType === 'text/plain' ? ['text/plain'] : [];
+    return result;
   }
 
   /**
