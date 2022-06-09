@@ -3,7 +3,6 @@
  */
 const { Fragment } = require('../../model/fragment');
 const contentType = require('content-type');
-
 const express = require('express');
 
 // Create a router on which to mount our API endpoints

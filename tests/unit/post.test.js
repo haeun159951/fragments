@@ -46,14 +46,13 @@ describe('POST /v1/fragments', () => {
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe('ok');
     expect(res.body.fragment.size).toEqual(10);
-    expect(res.body.fragment.type).toEqual('text/plain');
+    expect(res.body.fragment.type).toMatch('text/plain');
     expect(res.body.fragment.ownerId).toEqual(res.body.fragment.ownerId);
     expect(res.body.fragment.id).toEqual(res.body.fragment.id);
     expect(res.body.fragment.created).toEqual(res.body.fragment.created);
   });
 
   // responses include a Location header with a URL to GET the fragment
-
   test('responses include a Location header with a URL to GET the fragment', async () => {
     const res = await request(app)
       .post('/v1/fragments')
@@ -66,6 +65,7 @@ describe('POST /v1/fragments', () => {
     const locationURL = `${process.env.API_URL}/v1/fragments/${res.body.fragment.id}`;
     expect(res.headers.location).toEqual(locationURL);
   });
+
   // trying to create a fragment with an unsupported type errors as expected
   test('trying to create a fragment with an unsupported type errors as expected', async () => {
     const res = await request(app)

@@ -8,16 +8,18 @@ const { createSuccessResponse, createErrorResponse } = require('../../response')
  */
 module.exports = async (req, res) => {
   try {
-    const fragment = await Fragment.byId(req.user, req.params.id);
-    logger.debug(`owner id and params id: ${req.user} ${req.params.id}`);
-    let data = await fragment.getData();
-    data = data.toString();
+    logger.debug(`get-id: ${req.user}, ${req.params.id}`);
+    let fragmentById = await Fragment.byId(req.user, req.params.id);
+    fragmentById = await fragmentById.getData(); // read fragment data : Fragment1
+    fragmentById = fragmentById.toString(); // convert to string
+    console.log(fragmentById);
     res.status(200).json(
       createSuccessResponse({
-        data,
+        fragment: fragmentById,
       })
     );
-    logger.info({ fragment }, 'worked successfully');
+
+    logger.info({ fragmentById }, `worked`);
   } catch (error) {
     logger.error({ error }, `Error on post request`);
     res.status(404).json(createErrorResponse(404, error.message));

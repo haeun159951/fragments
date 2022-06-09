@@ -88,6 +88,7 @@ class Fragment {
    * @returns Promise
    */
   static delete(ownerId, id) {
+    logger.info({ ownerId, id }, 'fragment data and metadata for the given id');
     return deleteFragment(ownerId, id);
   }
 
@@ -120,7 +121,7 @@ class Fragment {
    */
   async setData(data) {
     if (Buffer.isBuffer(data)) {
-      logger.debug({ data }, 'data');
+      logger.info({ data }, 'fragment data');
       try {
         this.size = data.length;
         this.save();
