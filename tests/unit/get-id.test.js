@@ -30,7 +30,6 @@ describe('GET by Id /v1/fragments/:id', () => {
     const res = await request(app).get(`/v1/fragments/${id}`).auth('user1@email.com', 'password1');
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('ok');
-    console.log(res.body);
     expect(res.body.fragment).toEqual('Fragment 1');
   });
 

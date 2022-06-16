@@ -71,7 +71,7 @@ describe('POST /v1/fragments', () => {
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
-      .set('Content-type', 'application/json')
+      .set('Content-type', 'audio/mp4')
       .send('Fragment 1');
     expect(res.statusCode).toBe(415);
   });

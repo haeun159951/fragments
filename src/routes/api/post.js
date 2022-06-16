@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
   try {
     logger.debug(`post: ${req.user}`);
     const fragment = new Fragment({ ownerId: req.user, type: 'text/plain' });
+    await fragment.save();
     await fragment.setData(req.body);
     res.location(`${process.env.API_URL}/v1/fragments/${fragment.id}`);
     res.status(201).json(

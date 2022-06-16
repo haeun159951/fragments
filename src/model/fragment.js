@@ -14,6 +14,18 @@ const {
   deleteFragment,
 } = require('./data');
 
+const supportedType = [
+  'text/plain',
+  'text/plain; charset=utf-8',
+  // 'text/markdown',
+  // 'text/html',
+  // 'application/json',
+  // 'image/png',
+  // 'image/jpeg',
+  // 'image/webp',
+  // 'image/gif',
+];
+
 class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     if (id) {
@@ -68,17 +80,17 @@ class Fragment {
    * @returns Promise<Fragment>
    */
   static async byId(ownerId, id) {
-    const fragment = await readFragment(ownerId, id);
-    logger.info({ fragment }, 'fragment info');
-    if (fragment.id) {
-      try {
+    try {
+      const fragment = await readFragment(ownerId, id);
+      if (fragment.id) {
         return fragment;
-      } catch (error) {
-        logger.error({ error }, 'Error by id');
-        throw new Error(error);
+      } else {
+        logger.error({ fragment }, 'fragment id error');
+        throw new Error('error');
       }
-    } else {
-      throw new Error('failed to get a fragment with the id');
+    } catch (error) {
+      logger.error({ error }, 'Error by id');
+      throw new Error(error);
     }
   }
   /**
@@ -106,12 +118,7 @@ class Fragment {
    * @returns Promise<Buffer>
    */
   getData() {
-    try {
-      return readFragmentData(this.ownerId, this.id);
-    } catch (error) {
-      logger.error({ error }, 'Error from get data');
-      throw new Error('failed to get the fragment data');
-    }
+    return readFragmentData(this.ownerId, this.id);
   }
 
   /**
@@ -158,8 +165,17 @@ class Fragment {
    * @returns {Array<string>} list of supported mime types
    */
   get formats() {
-    let result = this.mimeType === 'text/plain' ? ['text/plain'] : [];
-    return result;
+    if (this.mimeType === 'text/plain') {
+      return ['text/plain'];
+    } else if (this.mimeType === 'text/markdown') {
+      return ['text/plain', 'text/markdown', 'text/html'];
+    } else if (this.mimeType === 'text/html') {
+      return ['text/plain', 'text/html'];
+    } else if (this.mimeType === 'application/json') {
+      return ['text/plain', 'application/json'];
+    } else {
+      return ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+    }
   }
 
   /**
@@ -168,8 +184,7 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    let result = value === 'text/plain' || value === 'text/plain; charset=utf-8' ? true : false;
-    return result;
+    return supportedType.includes(value) ? true : false;
   }
 }
 

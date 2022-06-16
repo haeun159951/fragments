@@ -50,4 +50,28 @@ describe('GET /v1/fragments', () => {
   });
 
   // TODO: we'll need to add tests to check the contents of the fragments array later
+
+  test('authenticated current user get all fragments which is expanded to include a full representations of the fragments metadata ', async () => {
+    const post1 = await request(app)
+      .post('/v1/fragments')
+      .auth('user2@email.com', 'password2')
+      .set('Content-type', 'text/plain')
+      .send('This is fragment 1');
+
+    const post2 = await request(app)
+      .post('/v1/fragments')
+      .auth('user2@email.com', 'password2')
+      .set('Content-type', 'text/plain')
+      .send('This is fragment 1-1');
+
+    const get = await request(app)
+      .get('/v1/fragments/?expand=1')
+      .auth('user2@email.com', 'password2');
+
+    expect(get.statusCode).toBe(200);
+    expect(get.body.status).toBe('ok');
+    expect(Array.isArray(get.body.fragments)).toBe(true);
+
+    expect(get.body.fragments).toEqual([post1.body.fragment, post2.body.fragment]);
+  });
 });
