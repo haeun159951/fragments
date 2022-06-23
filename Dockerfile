@@ -1,8 +1,10 @@
-# Use node version 16.15.1
-FROM node:16.15.1
+# Stage 0 - use an official, larger base node image for installing dependencies
+FROM node:16.15.1@sha256:6155ff062c403e99c1da7c317710c5c838c1e060f526d98baea6ee921ca61729 AS dependencies
  
 LABEL maintainer="Haeun Kim <haeun159951@gmail.com>"
 LABEL description="Fragments node.js microservice"
+
+ENV NODE_ENV=production
 
 # We default to use port 8080 in our service
 ENV PORT=8080
@@ -19,19 +21,43 @@ ENV NPM_CONFIG_COLOR=false
 WORKDIR /app
 
 # Copy the package.json and package-lock.json files into /app
-COPY package.json package-lock.json ./
+# (copy files & folders from build context to a path inside image)
+COPY package*.json ./
 
-# Install node dependencies defined in package-lock.json
-RUN npm install
+# Install only production dependencies defined in package-lock.json
+RUN npm ci --only=production
+
+###################################################
+
+#Stage 1 - pick an offical smaller base node image for production
+FROM node:16.15.1-alpine3.15@sha256:1fafca8cf41faf035192f5df1a5387656898bec6ac2f92f011d051ac2344f5c9 AS production
+
+RUN apk update
+RUN apk --no-cache add curl
+RUN apk --no-cache add dumb-init
+
+# run using NODE_ENV=production
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY --chown=node:node --from=dependencies /app /app
 
 # Copy src to /app/src/
-COPY ./src ./src
+COPY --chown=node:node ./src ./src
 
 # Copy our HTPASSWD file
-COPY ./tests/.htpasswd ./tests/.htpasswd
+COPY --chown=node:node ./tests/.htpasswd ./tests/.htpasswd
+
+# Add a user group node
+USER node
 
 # Start the container by running our server
-CMD npm start
+CMD ["dumb-init", "node", "src/index.js"]
 
 # We run our service on port 8080
 EXPOSE 8080
+
+# Define an automated healthcheck
+HEALTHCHECK --interval=15s --timeout=30s --start-period=10s --retries=3 \
+  CMD curl --fail localhost:8080 || exit 1
