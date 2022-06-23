@@ -14,17 +14,17 @@ const {
   deleteFragment,
 } = require('./data');
 
-const supportedType = [
-  'text/plain',
-  'text/plain; charset=utf-8',
-  // 'text/markdown',
-  // 'text/html',
-  // 'application/json',
-  // 'image/png',
-  // 'image/jpeg',
-  // 'image/webp',
-  // 'image/gif',
-];
+// const supportedType = [
+//   'text/plain',
+//   'text/plain; charset=utf-8',
+//   'text/markdown',
+//   'text/html',
+//   'application/json',
+//   // 'image/png',
+//   // 'image/jpeg',
+//   // 'image/webp',
+//   // 'image/gif',
+// ];
 
 class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
@@ -38,7 +38,7 @@ class Fragment {
     } else {
       throw new Error('ownerId is required');
     }
-    if (type === 'text/plain' || type === 'text/plain; charset=utf-8') {
+    if (Fragment.isSupportedType(type)) {
       this.type = type;
     } else {
       throw new Error('Type should be simple media type and can include a charset');
@@ -184,7 +184,22 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    return supportedType.includes(value) ? true : false;
+    logger.debug('isSupportedType: ' + value);
+    let result;
+
+    if (
+      value == 'text/plain' ||
+      value == 'text/plain; charset=utf-8' ||
+      value == 'text/markdown' ||
+      value == 'application/json' ||
+      value == 'text/html'
+    ) {
+      result = true;
+    } else {
+      result = false;
+    }
+
+    return result;
   }
 }
 

@@ -7,9 +7,13 @@ const { createSuccessResponse, createErrorResponse } = require('../../response')
  * Post a fragments for the current user
  */
 module.exports = async (req, res) => {
+  if (!Buffer.isBuffer(req.body)) {
+    return res.status(415).json(createErrorResponse(415, 'Unsupported Media Type'));
+  }
+
   try {
     logger.debug(`post: ${req.user}`);
-    const fragment = new Fragment({ ownerId: req.user, type: 'text/plain' });
+    const fragment = new Fragment({ ownerId: req.user, type: req.get('Content-type') });
     await fragment.save();
     await fragment.setData(req.body);
     res.location(`${process.env.API_URL}/v1/fragments/${fragment.id}`);
