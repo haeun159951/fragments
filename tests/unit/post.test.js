@@ -20,19 +20,9 @@ describe('POST /v1/fragments', () => {
       .auth('user1@email.com', 'password1')
       .set('Content-type', 'text/plain')
       .send('This is a fragment 1');
+    const body = JSON.parse(res.text);
     expect(res.statusCode).toBe(201);
-    expect(res.body.status).toBe('ok');
-  });
-
-  //authenticated users can create a plain text fragment
-  test('authenticated users can create a plain text fragment', async () => {
-    const res = await request(app)
-      .post('/v1/fragments')
-      .auth('user1@email.com', 'password1')
-      .set('Content-type', 'text/plain')
-      .send('Fragment 1');
-    expect(res.statusCode).toBe(201);
-    expect(res.body.status).toBe('ok');
+    expect(body.status).toBe('ok');
   });
 
   // responses include all necessary and expected properties (id, created, type, etc), and these values match what you expect for a given request (e.g., size, type, ownerId)
@@ -43,13 +33,13 @@ describe('POST /v1/fragments', () => {
       .set('Content-type', 'text/plain')
       .send('Fragment 1');
 
-    expect(res.statusCode).toBe(201);
-    expect(res.body.status).toBe('ok');
-    expect(res.body.fragment.size).toEqual(10);
-    expect(res.body.fragment.type).toMatch('text/plain');
-    expect(res.body.fragment.ownerId).toEqual(res.body.fragment.ownerId);
-    expect(res.body.fragment.id).toEqual(res.body.fragment.id);
-    expect(res.body.fragment.created).toEqual(res.body.fragment.created);
+    const body = JSON.parse(res.text);
+
+    expect(body.fragment.size).toEqual(10);
+    expect(body.fragment.type).toMatch('text/plain');
+    expect(body.fragment.ownerId).toEqual(body.fragment.ownerId);
+    expect(body.fragment.id).toEqual(body.fragment.id);
+    expect(body.fragment.created).toEqual(body.fragment.created);
   });
 
   // responses include a Location header with a URL to GET the fragment
@@ -58,11 +48,11 @@ describe('POST /v1/fragments', () => {
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
       .set('Content-type', 'text/plain')
-      .send('Fragment 1');
+      .send('This is fragment');
 
+    console.log(`res.text: ${JSON.parse(res.text).fragment.id}`);
     expect(res.statusCode).toBe(201);
-    expect(res.body.status).toBe('ok');
-    const locationURL = `${process.env.API_URL}/v1/fragments/${res.body.fragment.id}`;
+    let locationURL = `${process.env.API_URL}/v1/fragments/${JSON.parse(res.text).fragment.id}`;
     expect(res.headers.location).toEqual(locationURL);
   });
 

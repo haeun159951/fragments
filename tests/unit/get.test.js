@@ -21,6 +21,10 @@ describe('GET /v1/fragments', () => {
     expect(emptyArray).toEqual([]);
   });
 
+  // const body = JSON.parse(res.text);
+  // expect(res.statusCode).toBe(201);
+  // expect(body.status).toBe('ok');
+
   //authenticated users get a fragments array after creating 2 fragments
   test('authenticated users get a fragments array after creating 2 fragments', async () => {
     const postRes = await request(app)
@@ -28,8 +32,9 @@ describe('GET /v1/fragments', () => {
       .auth('user1@email.com', 'password1')
       .set('Content-type', 'text/plain')
       .send('Fragment 1');
+
     expect(postRes.statusCode).toBe(201);
-    expect(postRes.body.status).toBe('ok');
+    expect(JSON.parse(postRes.text).status).toBe('ok');
 
     const postRes2 = await request(app)
       .post('/v1/fragments')
@@ -37,7 +42,7 @@ describe('GET /v1/fragments', () => {
       .set('Content-type', 'text/plain')
       .send('Fragment 1-1');
     expect(postRes2.statusCode).toBe(201);
-    expect(postRes2.body.status).toBe('ok');
+    expect(JSON.parse(postRes.text).status).toBe('ok');
 
     const get = await request(app).get('/v1/fragments').auth('user1@email.com', 'password1');
     expect(get.statusCode).toBe(200);
@@ -48,8 +53,6 @@ describe('GET /v1/fragments', () => {
     );
     expect(Array.isArray(get.body.fragments)).toBe(true);
   });
-
-  // TODO: we'll need to add tests to check the contents of the fragments array later
 
   test('authenticated current user get all fragments which is expanded to include a full representations of the fragments metadata ', async () => {
     const post1 = await request(app)
@@ -71,7 +74,8 @@ describe('GET /v1/fragments', () => {
     expect(get.statusCode).toBe(200);
     expect(get.body.status).toBe('ok');
     expect(Array.isArray(get.body.fragments)).toBe(true);
-
-    expect(get.body.fragments).toEqual([post1.body.fragment, post2.body.fragment]);
+    const body = JSON.parse(post1.text);
+    const body2 = JSON.parse(post2.text);
+    expect(get.body.fragments).toEqual([body.fragment, body2.fragment]);
   });
 });

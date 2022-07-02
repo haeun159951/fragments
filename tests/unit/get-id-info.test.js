@@ -29,9 +29,12 @@ describe('GET by Id /v1/fragments/:id/info', () => {
       .auth('user1@email.com', 'password1')
       .set('Content-Type', 'text/plain')
       .send('This is fragment');
-    const id = post.body.fragment.id;
-    const fragment = post.body.fragment;
-    console.log(fragment);
+
+    const body = JSON.parse(post.text);
+    console.log(body.fragment.id);
+
+    const id = body.fragment.id;
+    const fragment = body.fragment;
 
     const get = await request(app)
       .get(`/v1/fragments/${id}/info`)
@@ -50,7 +53,8 @@ describe('GET by Id /v1/fragments/:id/info', () => {
       .set('Content-Type', 'text/plain')
       .send('This is fragment');
 
-    const id = post.body.fragment.id;
+    const body = JSON.parse(post.text);
+    const id = body.fragment.id;
     console.log(id);
 
     const get = await request(app)
