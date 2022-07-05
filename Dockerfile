@@ -32,9 +32,7 @@ RUN npm ci --only=production
 #Stage 1 - pick an offical smaller base node image for production
 FROM node:16.15.1-alpine3.15@sha256:1fafca8cf41faf035192f5df1a5387656898bec6ac2f92f011d051ac2344f5c9 AS production
 
-RUN apk update
-RUN apk --no-cache add curl
-RUN apk --no-cache add dumb-init
+RUN apk update && apk add --no-cache dumb-init=~1.2.5
 
 # run using NODE_ENV=production
 ENV NODE_ENV=production
