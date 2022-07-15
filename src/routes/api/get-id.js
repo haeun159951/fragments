@@ -15,11 +15,11 @@ module.exports = async (req, res) => {
 
     if (extension) {
       if (extension === 'html' && fragment.type === 'text/markdown') {
-        res.set('Content-Type', 'text/html');
         let result = md.render(data.toString());
         result = Buffer.from(result);
+        res.set('Content-Type', 'text/html');
         res.status(200).send(result);
-        logger.info({ targetType: extension }, `successfully convert to ${extension}`);
+        logger.info(`successfully converted to ${extension}`);
       } else {
         res
           .status(415)
@@ -28,10 +28,7 @@ module.exports = async (req, res) => {
     } else {
       res.set('Content-Type', fragment.type);
       res.status(200).send(data);
-      logger.info(
-        { fragmentData: data, contentType: fragment.type },
-        `successfully get fragment data`
-      );
+      logger.info(`successfully got fragment type ${fragment.type}`);
     }
   } catch (error) {
     res.status(404).json(createErrorResponse(404, error));

@@ -17,7 +17,7 @@ describe('GET by Id /v1/fragments/:id', () => {
 
   // authenticated users get a fragments id after creating a fragment
   test('authenticated users get a fragments id after creating a fragment', async () => {
-    const data = Buffer.from('This is fragment');
+    const data = 'This is fragment';
     const postRes = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
@@ -25,13 +25,11 @@ describe('GET by Id /v1/fragments/:id', () => {
       .send(data);
 
     const body = JSON.parse(postRes.text);
-    console.log(body.fragment.id);
-
     const id = body.fragment.id;
-
     const getRes = await request(app)
       .get(`/v1/fragments/${id}`)
       .auth('user1@email.com', 'password1');
+
     expect(getRes.statusCode).toBe(200);
     expect(getRes.text).toBe(data.toString());
   });

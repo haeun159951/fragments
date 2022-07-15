@@ -11,16 +11,13 @@ module.exports = async (req, res) => {
     logger.debug(`get-id-info: ${req.user}, ${req.params.id}`);
     const fragment = await Fragment.byId(req.user, req.params.id);
 
-    //If the id does not represent a known fragment, returns an HTTP 404 with an appropriate error message.
-
     if (!fragment.id) {
       res.status(404).json(createErrorResponse(404));
     }
 
-    console.log(fragment.id);
     res.status(200).json(
       createSuccessResponse({
-        fragment: fragment,
+        fragment,
       })
     );
 

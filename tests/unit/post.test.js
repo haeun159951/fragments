@@ -19,7 +19,7 @@ describe('POST /v1/fragments', () => {
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
       .set('Content-type', 'text/plain')
-      .send('This is a fragment 1');
+      .send('This is fragment');
     const body = JSON.parse(res.text);
     expect(res.statusCode).toBe(201);
     expect(body.status).toBe('ok');
@@ -31,11 +31,11 @@ describe('POST /v1/fragments', () => {
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
       .set('Content-type', 'text/plain')
-      .send('Fragment 1');
+      .send('This is fragment');
 
     const body = JSON.parse(res.text);
 
-    expect(body.fragment.size).toEqual(10);
+    expect(body.fragment.size).toEqual(16);
     expect(body.fragment.type).toMatch('text/plain');
     expect(body.fragment.ownerId).toEqual(body.fragment.ownerId);
     expect(body.fragment.id).toEqual(body.fragment.id);
@@ -50,10 +50,10 @@ describe('POST /v1/fragments', () => {
       .set('Content-type', 'text/plain')
       .send('This is fragment');
 
-    console.log(`res.text: ${JSON.parse(res.text).fragment.id}`);
+    const body = JSON.parse(res.text);
+    const locationInfo = `${process.env.API_URL}/v1/fragments/${body.fragment.id}`;
     expect(res.statusCode).toBe(201);
-    let locationURL = `${process.env.API_URL}/v1/fragments/${JSON.parse(res.text).fragment.id}`;
-    expect(res.headers.location).toEqual(locationURL);
+    expect(res.headers.location).toEqual(locationInfo);
   });
 
   // trying to create a fragment with an unsupported type errors as expected
@@ -65,6 +65,4 @@ describe('POST /v1/fragments', () => {
       .send('Fragment 1');
     expect(res.statusCode).toBe(415);
   });
-
-  // TODO: we'll need to add tests to check the contents of the fragments array later
 });

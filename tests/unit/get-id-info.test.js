@@ -1,7 +1,5 @@
 // tests/unit/get.test.js
-
 const request = require('supertest');
-
 const app = require('../../src/app');
 
 describe('GET by Id /v1/fragments/:id/info', () => {
@@ -31,8 +29,6 @@ describe('GET by Id /v1/fragments/:id/info', () => {
       .send('This is fragment');
 
     const body = JSON.parse(post.text);
-    console.log(body.fragment.id);
-
     const id = body.fragment.id;
     const fragment = body.fragment;
 
@@ -58,7 +54,7 @@ describe('GET by Id /v1/fragments/:id/info', () => {
     console.log(id);
 
     const get = await request(app)
-      .get(`/v1/fragments/333/info`)
+      .get(`/v1/fragments/3334545/info`)
       .auth('user1@email.com', 'password1');
 
     expect(get.statusCode).toBe(404);

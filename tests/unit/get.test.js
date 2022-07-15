@@ -21,10 +21,6 @@ describe('GET /v1/fragments', () => {
     expect(emptyArray).toEqual([]);
   });
 
-  // const body = JSON.parse(res.text);
-  // expect(res.statusCode).toBe(201);
-  // expect(body.status).toBe('ok');
-
   //authenticated users get a fragments array after creating 2 fragments
   test('authenticated users get a fragments array after creating 2 fragments', async () => {
     const postRes = await request(app)
