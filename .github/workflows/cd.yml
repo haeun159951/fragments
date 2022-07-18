@@ -7,7 +7,6 @@
 #
 # $ npm version 0.5.0
 #
-#
 # This will update `version` in package.json to `0.5.0` and create a new
 # tag, `v0.5.0` in git. We'll then use this tag (i.e., `v0.5.0`) to tag
 # our docker image before we push to AWS.
@@ -68,3 +67,27 @@ jobs:
           push: true
           # Use the git tag version and `latest`
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}, ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:latest
+
+      - name: Create compose file with specific Docker image info
+        env:
+          DOCKER_REPO: ${{ steps.login-ecr.outputs.registry }}/fragments
+          DOCKER_TAG: ${{ github.ref_name }}
+          COMPOSE_FILE: deploy-${{ github.ref_name }}.yml
+        run: |
+          envsubst < docker-compose.yml > ${{ env.COMPOSE_FILE }}
+          echo "Created ${{ env.COMPOSE_FILE }}"
+
+      - name: Deploy to Elastic Beanstalk
+        env:
+          VERSION: ${{ github.ref_name }}
+          COMPOSE_FILE: deploy-${{ github.ref_name }}.yml
+        uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
+          region: us-east-1
+          application_name: fragments
+          environment_name: fragments-env
+          version_label: ${{ env.VERSION }}
+          deployment_package: ${{ env.COMPOSE_FILE }}
