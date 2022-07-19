@@ -8,6 +8,7 @@ Content-Type: application/json
 # Body of the request goes in ```...``` when it's a string
 {"name":"kim"}
 
+
 # We expect to get back an HTTP 201
 HTTP/1.1 201
 # We have various assertions about the response that we want to check

@@ -6,6 +6,7 @@ HTTP/1.1 200
 # We should get back a non-cacheable response (cache-control header)
 Cache-Control: no-cache
 
+
 # Extra checks to perform against the response
 [Asserts]
 # We expect to get back a JSON response with { "status": "ok", ... }

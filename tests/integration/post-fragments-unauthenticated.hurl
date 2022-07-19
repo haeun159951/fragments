@@ -1,4 +1,3 @@
-#Confirm that posting an unsupported Content-Type produces a 415 error
 # tests/integration/post-fragments-unauthenticated.hurl
 # Authenticated POST to /v1/fragments
 POST http://localhost:8080/v1/fragments

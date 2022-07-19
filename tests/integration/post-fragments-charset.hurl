@@ -1,7 +1,3 @@
-#	Confirm that posting a fragment Content-Type that includes a charset 
-# (e.g., text/plain; charset=utf-8) works, and 
-# is returned as the fragment's type when doing a GET
-
 # tests/integration/post-fragments.hurl
 # Authenticated POST to /v1/fragments
 POST http://localhost:8080/v1/fragments
