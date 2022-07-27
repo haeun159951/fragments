@@ -14,17 +14,17 @@ const {
   deleteFragment,
 } = require('./data');
 
-// const supportedType = [
-//   'text/plain',
-//   'text/plain; charset=utf-8',
-//   'text/markdown',
-//   'text/html',
-//   'application/json',
-//   // 'image/png',
-//   // 'image/jpeg',
-//   // 'image/webp',
-//   // 'image/gif',
-// ];
+const allSupportedTypes = [
+  'text/plain',
+  'text/plain; charset=utf-8',
+  'text/markdown',
+  'text/html',
+  'application/json',
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/gif',
+];
 
 class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
@@ -186,19 +186,11 @@ class Fragment {
   static isSupportedType(value) {
     logger.debug('isSupportedType: ' + value);
     let result;
-
-    if (
-      value == 'text/plain' ||
-      value == 'text/plain; charset=utf-8' ||
-      value == 'text/markdown' ||
-      value == 'application/json' ||
-      value == 'text/html'
-    ) {
+    if (allSupportedTypes.includes(value)) {
       result = true;
     } else {
       result = false;
     }
-
     return result;
   }
 }
