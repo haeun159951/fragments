@@ -1,3 +1,7 @@
+/**
+ * Get a fragment data with the given ID
+ */
+
 const md = require('markdown-it')({
   html: true,
 });
@@ -9,10 +13,10 @@ module.exports = async (req, res) => {
   logger.debug(`owner id and id: ${req.user}, ${req.params.id}`);
 
   try {
-    const fragment = await Fragment.byId(req.user, req.params.id.split('.')[0]);
+    const metaData = await Fragment.byId(req.user, req.params.id.split('.')[0]);
+    const fragment = new Fragment(metaData);
     const data = await fragment.getData();
     let extension = req.params.id.split('.')[1];
-
     if (extension) {
       if (extension === 'html' && fragment.type === 'text/markdown') {
         let result = md.render(data.toString());
@@ -28,9 +32,10 @@ module.exports = async (req, res) => {
     } else {
       res.set('Content-Type', fragment.type);
       res.status(200).send(data);
-      logger.info(`successfully got fragment type ${fragment.type}`);
+      logger.info(`successfully got-id fragment type ${fragment.type}`);
     }
-  } catch (error) {
-    res.status(404).json(createErrorResponse(404, error));
+  } catch (e) {
+    logger.warn(e.message, 'Error getting fragment by id');
+    res.status(404).json(createErrorResponse(404, e.message));
   }
 };

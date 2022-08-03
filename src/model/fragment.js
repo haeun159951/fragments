@@ -81,13 +81,11 @@ class Fragment {
    */
   static async byId(ownerId, id) {
     try {
-      const fragment = await readFragment(ownerId, id);
-      if (fragment.id) {
-        return fragment;
-      } else {
-        logger.error({ fragment }, 'fragment id error');
-        throw new Error('error');
+      const data = await readFragment(ownerId, id);
+      if (data === undefined) {
+        throw new Error('Fragment does not exist.');
       }
+      return data;
     } catch (error) {
       logger.error({ error }, 'Error by id');
       throw new Error(error);

@@ -8,8 +8,8 @@ const { createSuccessResponse, createErrorResponse } = require('../../response')
  */
 module.exports = async (req, res) => {
   try {
-    logger.debug(`get-id-info: ${req.user}, ${req.params.id}`);
     const fragment = await Fragment.byId(req.user, req.params.id);
+    logger.debug(`get-id-info: ${req.user}, ${req.params.id}`);
 
     if (!fragment.id) {
       res.status(404).json(createErrorResponse(404));
@@ -17,13 +17,13 @@ module.exports = async (req, res) => {
 
     res.status(200).json(
       createSuccessResponse({
-        fragment,
+        fragment: fragment,
       })
     );
 
-    logger.info({ fragment }, `worked`);
+    logger.info({ fragment }, `get by id info worked`);
   } catch (error) {
-    logger.error({ error }, `Error on post request`);
+    logger.error({ error }, `Error on get-id-info request`);
     res.status(404).json(createErrorResponse(404, error.message));
   }
 };

@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
         fragment,
       })
     );
-    logger.info({ fragment }, `worked`);
+    logger.info({ fragment }, `post worked`);
   } catch (error) {
     logger.error({ error }, `Error on post request`);
     res.status(415).json(createErrorResponse(415, error.message));
