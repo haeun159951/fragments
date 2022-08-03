@@ -1,5 +1,4 @@
 # docker-compose.offline.yml
-
 services:
   # Fragments microservice API server
   fragments:
