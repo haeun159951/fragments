@@ -25,14 +25,16 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies defined in package-lock.json
-RUN npm ci --only=production
+RUN npm ci --only=production \
+    && npm uninstall sharp \
+    && npm install --platform=linuxmusl sharp@0.30.3
 
 ###################################################
 
 #Stage 1 - pick an offical smaller base node image for production
 FROM node:16.15.1-alpine3.15@sha256:1fafca8cf41faf035192f5df1a5387656898bec6ac2f92f011d051ac2344f5c9 AS production
 
-RUN apk update && apk add --no-cache dumb-init=~1.2.5
+RUN apk add --no-cache dumb-init=~1.2.5 curl=~7.80.0
 
 # run using NODE_ENV=production
 ENV NODE_ENV=production
