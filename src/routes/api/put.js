@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
           fragment: newFragment,
         })
       );
-      logger.info({ fragment: fragment }, `successfully update fragment data`);
+      logger.info({ fragment: fragment }, `successfully updated fragment data`);
     }
   } catch (err) {
     res.status(404).json(createErrorResponse(404, 'unable to find fragment with the given id'));

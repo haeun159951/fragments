@@ -13,8 +13,7 @@ module.exports = async (req, res) => {
   logger.debug(`owner id and id: ${req.user}, ${req.params.id}`);
 
   try {
-    const metaData = await Fragment.byId(req.user, req.params.id.split('.')[0]);
-    const fragment = new Fragment(metaData);
+    const fragment = await Fragment.byId(req.user, req.params.id.split('.')[0]);
     const data = await fragment.getData();
     let extension = req.params.id.split('.')[1];
     if (extension) {
@@ -32,7 +31,7 @@ module.exports = async (req, res) => {
     } else {
       res.set('Content-Type', fragment.type);
       res.status(200).send(data);
-      logger.info(`successfully got-id fragment type ${fragment.type}`);
+      logger.info(`successfully get-id fragment ${fragment.type}`);
     }
   } catch (e) {
     logger.warn(e.message, 'Error getting fragment by id');

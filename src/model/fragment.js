@@ -81,11 +81,8 @@ class Fragment {
    */
   static async byId(ownerId, id) {
     try {
-      const data = await readFragment(ownerId, id);
-      if (data === undefined) {
-        throw new Error('Fragment does not exist.');
-      }
-      return data;
+      logger.info(`fragment by id - ${id}`);
+      return new Fragment(await readFragment(ownerId, id));
     } catch (error) {
       logger.error({ error }, 'Error by id');
       throw new Error(error);
@@ -98,7 +95,7 @@ class Fragment {
    * @returns Promise
    */
   static delete(ownerId, id) {
-    logger.info({ ownerId, id }, 'fragment data and metadata for the given id');
+    logger.info({ ownerId, id }, 'fragment data and metadata for the given id deleted');
     return deleteFragment(ownerId, id);
   }
 
@@ -191,6 +188,29 @@ class Fragment {
     }
     return result;
   }
+
+  // async convertContentType(data, ext) {
+  //   //let value = mime.lookup(ext); // true or false
+  //   let result = data;
+  //   if (!this.formats.includes(value)) {
+  //     // if we don't have this format, then return false
+  //     return false;
+  //   }
+  //   // if (this.mimeType === 'text/markdown' && ext === 'text/html') {
+  //   //   result = md.render(data.toString());
+  //   //   result = Buffer.from(result);
+  //   // } else if (ext === 'image/jpeg') {
+  //   //   result = await sharp(data).jpeg().toBuffer();
+  //   // } else if (ext === 'image/png') {
+  //   //   result = await sharp(data).png().toBuffer();
+  //   // } else if (ext === 'image/webp') {
+  //   //   result = await sharp(data).webp().toBuffer();
+  //   // } else if (ext === 'image/gif') {
+  //   //   result = await sharp(data).gif().toBuffer();
+  //   // } else {
+  //   //   return [result, value];
+  //   // }
+  // }
 }
 
 module.exports.Fragment = Fragment;
