@@ -3,6 +3,10 @@ const { nanoid } = require('nanoid');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
 const logger = require('../logger');
+const sharp = require('sharp');
+const md = require('markdown-it')({
+  html: true,
+});
 
 // Functions for working with fragment metadata/data using our DB
 const {
@@ -189,28 +193,25 @@ class Fragment {
     return result;
   }
 
-  // async convertContentType(data, ext) {
-  //   //let value = mime.lookup(ext); // true or false
-  //   let result = data;
-  //   if (!this.formats.includes(value)) {
-  //     // if we don't have this format, then return false
-  //     return false;
-  //   }
-  //   // if (this.mimeType === 'text/markdown' && ext === 'text/html') {
-  //   //   result = md.render(data.toString());
-  //   //   result = Buffer.from(result);
-  //   // } else if (ext === 'image/jpeg') {
-  //   //   result = await sharp(data).jpeg().toBuffer();
-  //   // } else if (ext === 'image/png') {
-  //   //   result = await sharp(data).png().toBuffer();
-  //   // } else if (ext === 'image/webp') {
-  //   //   result = await sharp(data).webp().toBuffer();
-  //   // } else if (ext === 'image/gif') {
-  //   //   result = await sharp(data).gif().toBuffer();
-  //   // } else {
-  //   //   return [result, value];
-  //   // }
-  // }
+  async convertType(data, ext) {
+    if (!this.formats.includes(ext)) {
+      return false;
+    }
+    let result = data;
+    if (this.type === 'text/markdown' && ext === 'text/html') {
+      result = md.render(data.toString());
+      result = Buffer.from(result);
+    } else if (ext === 'image/jpeg') {
+      result = await sharp(data).jpeg().toBuffer();
+    } else if (ext === 'image/png') {
+      result = await sharp(data).png().toBuffer();
+    } else if (ext === 'image/webp') {
+      result = await sharp(data).webp().toBuffer();
+    } else if (ext === 'image/gif') {
+      result = await sharp(data).gif().toBuffer();
+    }
+    return result;
+  }
 }
 
 module.exports.Fragment = Fragment;
