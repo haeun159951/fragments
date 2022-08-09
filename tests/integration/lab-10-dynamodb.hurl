@@ -11,7 +11,6 @@ Content-Type: application/json
 { "service": "DynamoDB" }
 
 # Confirm that the server returns a 201, and capture the Location header value and the fragment's id in variables 
-# named fragment1_url and fragment1_id.
 HTTP/1.1 201
 [Captures]
 fragment1_url: header "Location"

@@ -8,7 +8,6 @@ Content-Type: text/plain
 # Body of the request goes in ```...``` when it's a string
 ```This is a fragment!```
 
-
 # We expect to get back an HTTP 201
 HTTP/1.1 201
 # We have various assertions about the response that we want to check
@@ -31,7 +30,7 @@ jsonpath "$.fragment.size" == 19
 [Captures]
 url: header "Location"
 
-# 2. Try to GET the fragment we just posted by its URL
+# Try to GET the fragment we just posted by its URL
 GET {{url}}
 Authorization: Basic dXNlcjFAZW1haWwuY29tOnBhc3N3b3JkMQ==
 
