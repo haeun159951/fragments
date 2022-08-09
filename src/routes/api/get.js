@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
         fragments,
       })
     );
-    logger.info({ fragments }, `GET worked`);
+    logger.info({ fragments }, `Get worked`);
   } catch (error) {
     logger.error({ error }, `Error on get request`);
     res.status(404).json(createErrorResponse(404, error.message));

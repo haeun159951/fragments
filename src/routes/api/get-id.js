@@ -12,6 +12,7 @@ module.exports = async (req, res) => {
     const fragment = await Fragment.byId(req.user, req.params.id.split('.')[0]);
     const data = await fragment.getData();
     const extension = req.params.id.split('.')[1];
+    logger.info(`extension: ${extension}`);
     if (extension) {
       let type = mime.lookup(extension);
       console.log(type); // type text/html, image/png
@@ -20,7 +21,6 @@ module.exports = async (req, res) => {
       if (!result) {
         return res.status(415).json(createErrorResponse(415, 'Unsupported type'));
       }
-
       res.set('Content-Type', type);
       res.status(200).send(result);
     } else {
