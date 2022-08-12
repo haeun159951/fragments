@@ -15,9 +15,7 @@ module.exports = async (req, res) => {
     logger.info(`extension: ${extension}`);
     if (extension) {
       let type = mime.lookup(extension);
-      console.log(type); // type text/html, image/png
-      let result = await fragment.convertType(data, type);
-
+      let result = await fragment.getConvertedType(data, type);
       if (!result) {
         return res.status(415).json(createErrorResponse(415, 'Unsupported type'));
       }

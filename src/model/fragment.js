@@ -193,24 +193,25 @@ class Fragment {
     return result;
   }
 
-  async convertType(data, ext) {
+  async getConvertedType(data, ext) {
     if (!this.formats.includes(ext)) {
       return false;
+    } else {
+      let result = data;
+      if (this.type === 'text/markdown' && ext === 'text/html') {
+        result = md.render(data.toString());
+        result = Buffer.from(result);
+      } else if (ext === 'image/jpeg') {
+        result = await sharp(data).jpeg().toBuffer();
+      } else if (ext === 'image/png') {
+        result = await sharp(data).png().toBuffer();
+      } else if (ext === 'image/webp') {
+        result = await sharp(data).webp().toBuffer();
+      } else if (ext === 'image/gif') {
+        result = await sharp(data).gif().toBuffer();
+      }
+      return result;
     }
-    let result = data;
-    if (this.type === 'text/markdown' && ext === 'text/html') {
-      result = md.render(data.toString());
-      result = Buffer.from(result);
-    } else if (ext === 'image/jpeg') {
-      result = await sharp(data).jpeg().toBuffer();
-    } else if (ext === 'image/png') {
-      result = await sharp(data).png().toBuffer();
-    } else if (ext === 'image/webp') {
-      result = await sharp(data).webp().toBuffer();
-    } else if (ext === 'image/gif') {
-      result = await sharp(data).gif().toBuffer();
-    }
-    return result;
   }
 }
 
