@@ -194,10 +194,9 @@ class Fragment {
   }
 
   async getConvertedType(data, ext) {
-    if (!this.formats.includes(ext)) {
-      return false;
-    } else {
-      let result = data;
+    logger.info(`getConvertedType: ${data} ${ext}`);
+    let result = data;
+    if (this.formats.includes(ext)) {
       if (this.type === 'text/markdown' && ext === 'text/html') {
         result = md.render(data.toString());
         result = Buffer.from(result);

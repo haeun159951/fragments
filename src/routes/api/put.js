@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
       res.location(`${process.env.API_URL}/v1/fragments/${fragment.id}`);
       res.status(201).json(
         createSuccessResponse({
-          fragment: fragment,
+          fragment,
         })
       );
       logger.info({ fragment }, `Put worked`);
